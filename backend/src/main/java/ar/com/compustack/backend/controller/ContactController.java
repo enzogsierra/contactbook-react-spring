@@ -1,13 +1,13 @@
 package ar.com.compustack.backend.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +20,7 @@ import ar.com.compustack.backend.model.Contact;
 import ar.com.compustack.backend.repository.ContactRepository;
 
 
+@CrossOrigin("http://localhost:3000/")
 @RestController
 @RequestMapping("/api/v1")
 public class ContactController 
@@ -28,30 +29,29 @@ public class ContactController
     private ContactRepository contactRepository;
 
 
-    @GetMapping("/")
+    @GetMapping("/") // Principal
     public List<Contact> findAll() {
         return contactRepository.findAll();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable Integer id) 
+    @GetMapping("/{id}") // Buscar contacto por ID
+    public ResponseEntity<?> findById(@PathVariable Integer id)
     {
-        Optional<Contact> contact = contactRepository.findById(id);
-
-        return (contact.isPresent()) ? (ResponseEntity.ok(contact.get())) : ResponseEntity.notFound().build();
+        Contact contact = contactRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("No se pudo encontrar el ID del contacto"));
+        return ResponseEntity.ok(contact);
     }
 
-    @PostMapping("/save")
-    public ResponseEntity<?> save(@Valid @RequestBody Contact contact) 
+    @PostMapping("/save") // Crear/editar contact
+    public ResponseEntity<?> save(@Valid @RequestBody Contact contact)
     {
         contactRepository.save(contact);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(contact);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> delete(@PathVariable Integer id)
+    @DeleteMapping("/delete/{id}") // Eliminar contacto
+    public ResponseEntity<?> delete(@PathVariable Integer id) 
     {
-        Contact contact = contactRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Given contact ID doesn't exists."));
+        Contact contact = contactRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("El ID de contacto dado no existe"));
         contactRepository.delete(contact);
         return ResponseEntity.ok().build();
     }

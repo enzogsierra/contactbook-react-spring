@@ -1,28 +1,27 @@
-import './App.css';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
+import Home from "./views/Home";
+import ContactForm from "./views/ContactForm";
 
-function doSomething(e)
-{
-    e.preventDefault();
-    const v1 = parseInt(e.target.value1.value);
-    const v2 = parseInt(e.target.value2.value);
-    const sum = v1 + v2;
-
-    alert("Sum is:" + sum);
-}
 
 function App() 
 {
     return (
         <div>
-            <form onSubmit={doSomething}>
-                <p>Type first value: </p>
-                <input type="text" name="value1"></input>
+            <BrowserRouter>
+                <Header></Header>
 
-                <p>Type first value: </p>
-                <input type="text" name="value2"></input>
+                <div className="container">
+                    <Routes>
+                        <Route exact path="/" element={<Home/>}></Route>
+                        <Route path="/form" element={<ContactForm/>}></Route>
+                        <Route path="/form/:id" element={<ContactForm/>}></Route>
+                    </Routes>
+                </div>
 
-                <input type="submit"></input>
-            </form>
+                <Footer></Footer>
+            </BrowserRouter>
         </div>
     );
 }

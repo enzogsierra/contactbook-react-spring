@@ -6,9 +6,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,18 +25,15 @@ public class Contact
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotNull(message = "Contact name can't be null")
-    @Min(value = 3, message = "Name should be at least 3 chars long")
+    @Size(min = 3, message = "El nombre debe tener al menos {min} caracteres")
     private String name;
 
-    @NotNull(message = "Contact last name can't be null")
-    @Min(value = 3, message = "Last name should be at least 3 chars long")
+    @Size(min = 3, message = "El apellido debe tener al menos {min} caracteres")
     private String lastName;
 
-    @NotNull(message = "Contact phone number can't be null")
-    @NotBlank(message = "Provide a phone number for this contact")
+    @NotBlank(message = "Indica un número de teléfono para este contacto")
     private String phoneNumber;
 
-    @Email(message = "Please provide a valid email")
+    @Email(message = "El email '${validatedValue}' no es un email válido. Escribe una dirección de email válida")
     private String email;
 }
